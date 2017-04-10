@@ -1,10 +1,14 @@
 import bodyParser from "body-parser"
 import express from "express"
+import mongoose from "./db/connection.js"
 import path from "path"
 
 // express config
 const app = express()
 const router = express.Router()
+
+// mongoose config
+const City = mongoose.model("City")
 
 // static files
 const staticFiles = express.static(path.join(__dirname, "../../client/build"))
@@ -16,12 +20,9 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 
 router.get("/cities", (req, res) => {
-  const cities = [
-    {name: 'New York City', population: 8175133},
-    {name: 'Los Angeles',   population: 3792621},
-    {name: 'Chicago',       population: 2695598}
-  ]
-  res.json(cities)
+  City.find({}).then(cities => {
+    res.json(cities)
+  })
 })
 
 app.use(router)
